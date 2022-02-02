@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
-import { RootStackScreen } from './src 2/navigation/Root/RootStackNavigation';
-import { store } from './src 2/Redux';
+import { RootStackScreen } from './src/navigation/Root/RootStackNavigation';
+import { store } from './src/Redux';
 
 export default function App() {
   return (

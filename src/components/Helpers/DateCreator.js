@@ -14,19 +14,10 @@ export const dateCreator = (date = new Date('December 17, 1995 03:24:00')) => {
     rowDate.getSeconds() > 9
       ? rowDate.getSeconds()
       : `0${rowDate.getSeconds()}`;
-  let result = '';
-  result +=
-    fullYears +
-    '.' +
-    month +
-    '.' +
-    day +
-    ' at: ' +
-    hour +
-    ':' +
-    minute +
-    ':' +
-    second;
+  let resultDate = '';
+  let resultTime = '';
+  resultDate += fullYears + '.' + month + '.' + day;
+  resultTime += hour + ':' + minute + ':' + second;
 
-  return result;
+  return { executionDate: resultDate, executionTime: resultTime };
 };

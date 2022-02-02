@@ -15,24 +15,54 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Todo } from '../../components/Todo/Todo';
 import { Input } from '../../components/Input/Input';
 
-export function TodosScreen({ navigation }) {
+export function TodosScreen({ navigation, route }) {
   const todos = useSelector((state) => state.toolkit.todos);
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const dimentions = useDimensions();
   const [isSearchFocus, setIsSearchFocus] = useState(false);
+  const [value, setValue] = useState('');
+  const [checkedAll, setCheckedAll] = useState(true);
+  const [checkedOnlyDone, setCheckedOnlyDone] = useState(false);
+  const [checkedOnlyNotDone, setCheckedOnlyNotDone] = useState(false);
   const inputRef = useRef();
+
+  const copyTodos = useMemo(() => {
+    const slicedTodos = Array.isArray(todos) ? todos.slice(0) : [];
+    return slicedTodos;
+  }, [todos]);
+
+  const listByCategories = useMemo(() => {
+    if (checkedOnlyDone) {
+      return copyTodos.filter((todo) => {
+        return todo.statusDone === true;
+      });
+    } else if (checkedOnlyNotDone) {
+      return copyTodos.filter((todo) => {
+        return todo.statusDone === false;
+      });
+    }
+    return copyTodos;
+  }, [copyTodos, checkedAll, checkedOnlyDone, checkedOnlyNotDone]);
+
+  const filteredTodos = useMemo(() => {
+    if (value) {
+      const regExp = new RegExp(`${value}`);
+      return listByCategories.filter((todo) => {
+        return todo.title.match(regExp);
+      });
+    }
+    return listByCategories;
+  }, [listByCategories, value]);
 
   const reversedTodos = useMemo(() => {
     console.log('todos in Todos Screen...', todos);
-    const prevTodos = Array.isArray(todos) ? todos.slice(0) : [];
+    const prevTodos = filteredTodos.slice(0);
     return prevTodos.reverse();
-  }, [todos]);
+  }, [filteredTodos]);
 
   useEffect(() => {
     console.log('isSearchFocus in useEffect...', isSearchFocus);
   }, [isSearchFocus]);
-
-  //console.log(todos, '-------', dispatch(addTodo));
 
   const searchHandler = () => {
     if (isSearchFocus) {
@@ -44,6 +74,14 @@ export function TodosScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Input
+        checkedAll={checkedAll}
+        setCheckedAll={setCheckedAll}
+        checkedOnlyDone={checkedOnlyDone}
+        setCheckedOnlyDone={setCheckedOnlyDone}
+        checkedOnlyNotDone={checkedOnlyNotDone}
+        setCheckedOnlyNotDone={setCheckedOnlyNotDone}
+        value={value}
+        setValue={setValue}
         isSearchFocus={isSearchFocus}
         setIsSearchFocus={setIsSearchFocus}
         searchHandler={searchHandler}
@@ -55,7 +93,7 @@ export function TodosScreen({ navigation }) {
             data={reversedTodos}
             inverted={true}
             renderItem={({ item }) => (
-              <Todo todo={item.title} navigation={navigation} />
+              <Todo todo={item} navigation={navigation} route={route} />
             )}
             keyExtractor={(item) => item.id.toString()}
           />

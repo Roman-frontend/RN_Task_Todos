@@ -5,14 +5,17 @@ import { AddTodoModalScreen } from '../../Modals/AddTodoModal/AddTodoModal';
 import { SearchTodoModal } from '../../Modals/SearchTodo/SearchTodo';
 import { SettingsModal } from '../../Modals/SettingsModal/SettingsModal';
 import { DescriptionTodoModal } from '../../Modals/DescriptionTodoModal/DescriptionTodoModal';
-import { View } from 'react-native';
 
 const RootStack = createNativeStackNavigator();
 
 export const RootStackScreen = () => {
   return (
     <RootStack.Navigator mode='modal' screenOptions={{ headerShown: false }}>
-      <RootStack.Screen name='Todos' component={TodosScreen} />
+      <RootStack.Screen
+        name='Todos'
+        component={TodosScreen}
+        initialParams={{ isShowRemoveTodo: false }}
+      />
       <RootStack.Group screenOptions={{ presentation: 'modal' }}>
         <RootStack.Screen
           screenOptions={{ presentation: 'modal' }}
@@ -34,6 +37,7 @@ export const RootStackScreen = () => {
           screenOptions={{ presentation: 'modal' }}
           name='Settings'
           component={SettingsModal}
+          initialParams={{ isShowRemoveTodo: false }}
           options={{
             headerShown: false,
           }}

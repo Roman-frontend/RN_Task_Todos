@@ -14,6 +14,14 @@ import { useDimensions } from '@react-native-community/hooks';
 import { addTodo } from '../../Redux/toolkitReducer';
 
 export const Input = ({
+  checkedAll,
+  setCheckedAll,
+  checkedOnlyDone,
+  setCheckedOnlyDone,
+  checkedOnlyNotDone,
+  setCheckedOnlyNotDone,
+  value,
+  setValue,
   isSearchFocus,
   setIsSearchFocus,
   inputRef,
@@ -21,10 +29,6 @@ export const Input = ({
 }) => {
   const dispatch = useDispatch();
   const dimentions = useDimensions();
-  const [value, setValue] = useState('');
-  const [checkedAll, setCheckedAll] = useState(true);
-  const [checkedOnlyDone, setCheckedOnlyDone] = useState(false);
-  const [checkedOnlyNotDone, setCheckedOnlyNotDone] = useState(false);
 
   const searchSettingsHandler = (key) => {
     key === 'all' ? setCheckedAll(!checkedAll) : setCheckedAll(false);
@@ -36,6 +40,10 @@ export const Input = ({
       : setCheckedOnlyNotDone(false);
   };
 
+  function inputHandler(text) {
+    setValue(text);
+  }
+
   return (
     <View>
       <TouchableOpacity onPress={searchHandler}>
@@ -43,7 +51,7 @@ export const Input = ({
           <EvilIcons name='search' size={30} />
           <TextInput
             style={styles.input}
-            onChangeText={setValue}
+            onChangeText={(text) => inputHandler(text)}
             ref={inputRef}
             value={value}
             placeholder='   Search'

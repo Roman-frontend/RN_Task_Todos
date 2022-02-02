@@ -22,18 +22,25 @@ export const AddTodoModalScreen = (route) => {
   const [isClickedAdd, setIsClickedAdd] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date(Date.now() + 10000));
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   function addTodoHandler() {
     setIsClickedAdd(true);
-    console.log('date after dateCreator...', dateCreator(date));
+
     if (name.trim()) {
+      const correctDate = dateCreator(date);
       const data = {
         title: name,
         description,
-        executionDate: show ? date : 'this task does not contain an end date',
+        statusDone: false,
+        executionDate: show
+          ? correctDate.executionDate
+          : 'does not contain dates',
+        executionTime: show
+          ? correctDate.executionTime
+          : 'does not contain times',
       };
       dispatch(addTodo(data));
       route.navigation.goBack();
@@ -71,6 +78,7 @@ export const AddTodoModalScreen = (route) => {
             value={name}
             onChangeText={setName}
             style={styles.input(dimentions.screen)}
+            multiline
             autoCorrect={false}
             autoCapitalize='none'
           />
@@ -86,6 +94,7 @@ export const AddTodoModalScreen = (route) => {
         <View style={styles.item()}>
           <TextInput
             placeholder='Enter the to-do description'
+            multiline
             value={description}
             onChangeText={setDescription}
             style={styles.input(dimentions.screen)}
@@ -98,23 +107,30 @@ export const AddTodoModalScreen = (route) => {
         </View>
 
         <View>
-          <View>
-            <Button onPress={showDatepicker} title='Show date picker!' />
-          </View>
-          <View>
-            <Button onPress={showTimepicker} title='Show time picker!' />
-          </View>
-          {show && (
+          <View style={styles.dateBlock}>
+            <Button onPress={showDatepicker} title='Set the execution time!' />
             <DateTimePicker
               testID='dateTimePicker'
               value={date}
-              mode={mode}
+              mode='date'
               is24Hour={true}
               display='default'
               onChange={onChangeDate}
               minimumDate={Date.now()}
             />
-          )}
+          </View>
+          <View>
+            <Button onPress={showTimepicker} title='Set the execution time!' />
+            <DateTimePicker
+              testID='dateTimePicker'
+              value={date}
+              mode='time'
+              is24Hour={true}
+              display='default'
+              onChange={onChangeDate}
+              minimumDate={Date.now()}
+            />
+          </View>
         </View>
 
         <View style={styles.footerButtons}>
@@ -168,6 +184,9 @@ const styles = StyleSheet.create({
       bottom: 10,
       color: 'red',
     };
+  },
+  dateBlock: {
+    marginVertical: 20,
   },
   footerButtons: {
     marginTop: 30,
