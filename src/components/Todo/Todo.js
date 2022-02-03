@@ -1,32 +1,44 @@
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useDimensions } from '@react-native-community/hooks';
 import { removeTodo, doneTodo } from '../../Redux/toolkitReducer';
 
 export function Todo({ todo, navigation, route }) {
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState(false);
   const { isShowRemoveTodo } = route.params;
+  const dimentions = useDimensions();
 
   useEffect(() => {
     showRemoveTodoHandler();
   }, [isShowRemoveTodo]);
 
   function showRemoveTodoHandler() {
-    if (isShowRemoveTodo) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.5}
-          onPress={removeTodoHandler}
-          style={styles.deleteIcon}
-        >
-          <MaterialCommunityIcons name='delete-forever' size={30} color='red' />
-        </TouchableOpacity>
-      );
-    }
-    return null;
+    return (
+      <TouchableOpacity
+        activeOpacity={0.5}
+        onPress={removeTodoHandler}
+        style={[
+          styles.deleteIcon,
+          { display: isShowRemoveTodo ? 'flex' : 'none' },
+        ]}
+      >
+        <MaterialCommunityIcons name='delete-forever' size={30} color='red' />
+      </TouchableOpacity>
+    );
+  }
+
+  function openModalDescription() {
+    navigation.navigate('Description', {
+      todoTitle: todo.title,
+      todoDescription: todo.description,
+      todoStatusDone: todo.statusDone,
+      todoExecutionDate: todo.executionDate,
+      todoExecutionTime: todo.executionTime,
+      todoId: todo.id,
+    });
   }
 
   function removeTodoHandler() {
@@ -37,33 +49,21 @@ export function Todo({ todo, navigation, route }) {
     dispatch(doneTodo({ id: todo.id, status: !todo.statusDone }));
   }
 
-  console.log(todo);
-
   return (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      onPress={() => {
-        navigation.navigate('Description', {
-          todoTitle: todo.title,
-          todoDescription: todo.description,
-          todoStatusDone: todo.statusDone,
-          todoExecutionDate: todo.executionDate,
-          todoExecutionTime: todo.executionTime,
-          todoId: todo.id,
-        });
-      }}
-    >
+    <TouchableOpacity activeOpacity={0.5} onPress={openModalDescription}>
       <View style={styles.todo(todo.statusDone)}>
-        <BouncyCheckbox
-          size={25}
-          isChecked={todo.statusDone}
-          disableBuiltInState
-          fillColor='red'
-          unfillColor='#FFFFFF'
-          text={todo.title}
-          iconStyle={{ borderColor: 'blue' }}
-          onPress={doneTodoHandler}
-        />
+        <View style={styles.checkBox(dimentions.screen.width)}>
+          <BouncyCheckbox
+            size={25}
+            isChecked={todo.statusDone}
+            disableBuiltInState
+            fillColor='red'
+            unfillColor='#FFFFFF'
+            iconStyle={{ borderColor: 'green' }}
+            onPress={doneTodoHandler}
+          />
+          <Text style={styles.todoTitle(todo.statusDone)}>{todo.title}</Text>
+        </View>
         {showRemoveTodoHandler()}
       </View>
     </TouchableOpacity>
@@ -86,10 +86,11 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     };
   },
-  title: {},
-  logo: {
-    width: 30,
-    height: 30,
+  checkBox: (widthScreen) => {
+    const width = widthScreen - 200;
+    return { flexDirection: 'row', width };
   },
-  deleteIcon: {},
+  todoTitle: (status) => {
+    return { textDecorationLine: status ? 'line-through' : 'none' };
+  },
 });

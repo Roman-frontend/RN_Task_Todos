@@ -1,93 +1,80 @@
-import React, { useState, useEffect, useMemo, useContext, useRef } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Button,
-  Pressable,
-  TouchableOpacity,
-} from 'react-native';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { StyleSheet, View, FlatList, Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 import { useDimensions } from '@react-native-community/hooks';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Feather from 'react-native-vector-icons/Feather';
 import { Todo } from '../../components/Todo/Todo';
 import { Input } from '../../components/Input/Input';
+import { TodosFooterPlus } from '../../components/TodosFooterPlus/TodosFooterPlus';
+import { TodosFooter } from '../../components/TodosFooter/TodosFooter';
 
 export function TodosScreen({ navigation, route }) {
   const todos = useSelector((state) => state.toolkit.todos);
-  const dispatch = useDispatch();
   const dimentions = useDimensions();
-  const [isSearchFocus, setIsSearchFocus] = useState(false);
-  const [value, setValue] = useState('');
+  const [isSearchFooter, setIsSearchFooter] = useState(false);
+  const [inputSearchValue, setInputSearchValue] = useState('');
   const [checkedAll, setCheckedAll] = useState(true);
   const [checkedOnlyDone, setCheckedOnlyDone] = useState(false);
   const [checkedOnlyNotDone, setCheckedOnlyNotDone] = useState(false);
   const inputRef = useRef();
 
   const copyTodos = useMemo(() => {
-    const slicedTodos = Array.isArray(todos) ? todos.slice(0) : [];
-    return slicedTodos;
+    return Array.isArray(todos) ? todos.slice(0) : [];
   }, [todos]);
 
   const listByCategories = useMemo(() => {
-    if (checkedOnlyDone) {
+    if (checkedOnlyDone || checkedOnlyNotDone) {
+      const checkedStatus = checkedOnlyDone ? true : false;
+
       return copyTodos.filter((todo) => {
-        return todo.statusDone === true;
-      });
-    } else if (checkedOnlyNotDone) {
-      return copyTodos.filter((todo) => {
-        return todo.statusDone === false;
+        return todo.statusDone === checkedStatus;
       });
     }
     return copyTodos;
   }, [copyTodos, checkedAll, checkedOnlyDone, checkedOnlyNotDone]);
 
   const filteredTodos = useMemo(() => {
-    if (value) {
-      const regExp = new RegExp(`${value}`);
+    if (inputSearchValue) {
+      const regExp = new RegExp(`${inputSearchValue}`);
       return listByCategories.filter((todo) => {
         return todo.title.match(regExp);
       });
     }
     return listByCategories;
-  }, [listByCategories, value]);
+  }, [listByCategories, inputSearchValue]);
 
   const reversedTodos = useMemo(() => {
-    console.log('todos in Todos Screen...', todos);
     const prevTodos = filteredTodos.slice(0);
     return prevTodos.reverse();
   }, [filteredTodos]);
 
-  useEffect(() => {
-    console.log('isSearchFocus in useEffect...', isSearchFocus);
-  }, [isSearchFocus]);
-
   const searchHandler = () => {
-    if (isSearchFocus) {
+    console.log('isSearchFooter...', isSearchFooter);
+    if (isSearchFooter) {
       return inputRef.current.blur();
     }
+    setIsSearchFooter(true);
     inputRef.current.focus();
   };
 
   return (
     <View style={styles.container}>
-      <Input
-        checkedAll={checkedAll}
-        setCheckedAll={setCheckedAll}
-        checkedOnlyDone={checkedOnlyDone}
-        setCheckedOnlyDone={setCheckedOnlyDone}
-        checkedOnlyNotDone={checkedOnlyNotDone}
-        setCheckedOnlyNotDone={setCheckedOnlyNotDone}
-        value={value}
-        setValue={setValue}
-        isSearchFocus={isSearchFocus}
-        setIsSearchFocus={setIsSearchFocus}
-        searchHandler={searchHandler}
-        inputRef={inputRef}
-      />
-      <View style={styles.todos(dimentions.screen.height, isSearchFocus)}>
+      <View style={{ position: 'absolute', top: 0, zIndex: 1 }}>
+        <Input
+          checkedAll={checkedAll}
+          setCheckedAll={setCheckedAll}
+          checkedOnlyDone={checkedOnlyDone}
+          setCheckedOnlyDone={setCheckedOnlyDone}
+          checkedOnlyNotDone={checkedOnlyNotDone}
+          setCheckedOnlyNotDone={setCheckedOnlyNotDone}
+          value={inputSearchValue}
+          setValue={setInputSearchValue}
+          isSearchFooter={isSearchFooter}
+          setIsSearchFooter={setIsSearchFooter}
+          searchHandler={searchHandler}
+          inputRef={inputRef}
+        />
+      </View>
+      <View style={styles.todos(dimentions.screen.height, isSearchFooter)}>
         <Pressable>
           <FlatList
             data={reversedTodos}
@@ -99,36 +86,8 @@ export function TodosScreen({ navigation, route }) {
           />
         </Pressable>
       </View>
-      <TouchableOpacity
-        style={[styles.plusButton(dimentions.screen.width), styles.shadow]}
-      >
-        <View style={styles.viewButton}>
-          <AntDesign
-            name='plus'
-            size={40}
-            color='#ffffff'
-            onPress={() => {
-              navigation.navigate('AddTodo');
-            }}
-          />
-        </View>
-      </TouchableOpacity>
-      <View style={[styles.footer(dimentions.screen.width), styles.shadow]}>
-        <TouchableOpacity
-          style={{ alignSelf: 'center', right: 15 }}
-          onPress={() => {
-            navigation.navigate('Settings');
-          }}
-        >
-          <Feather name='settings' size={30} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ alignSelf: 'center', left: 15 }}
-          onPress={searchHandler}
-        >
-          <AntDesign name='search1' size={30} />
-        </TouchableOpacity>
-      </View>
+      <TodosFooterPlus navigation={navigation} />
+      <TodosFooter navigation={navigation} searchHandler={searchHandler} />
     </View>
   );
 }
@@ -140,49 +99,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   todos: (heightScreen, isOpenSearch) => {
-    const height = isOpenSearch ? heightScreen - 360 : heightScreen - 230;
+    const height = isOpenSearch ? heightScreen - 400 : heightScreen - 270;
     return {
       height,
       bottom: 10,
       paddingHorizontal: 40,
       paddingBottom: 20,
-    };
-  },
-  viewButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#e32f45',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  plusButton: (widthScreen) => {
-    const rightButton = widthScreen / 2 - 40;
-    console.log(rightButton, widthScreen, widthScreen / 2);
-    return {
-      position: 'absolute',
-      bottom: 70,
-      left: rightButton,
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1,
-    };
-  },
-  footer: (widthScreen) => {
-    const width = widthScreen - 40;
-    console.log(width, widthScreen);
-    return {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignContent: 'center',
-      bottom: 30,
-      left: 20,
-      right: 20,
-      elevation: 0,
-      backgroundColor: '#ffffff',
-      borderRadius: 15,
-      height: 70,
-      width,
     };
   },
   shadow: {

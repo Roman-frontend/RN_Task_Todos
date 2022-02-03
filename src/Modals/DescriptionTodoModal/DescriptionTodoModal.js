@@ -1,16 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { useDimensions } from '@react-native-community/hooks';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { connect, useSelector, useDispatch } from 'react-redux';
-import Entypo from 'react-native-vector-icons/Entypo';
+import { useDispatch } from 'react-redux';
 import { removeTodo } from '../../Redux/toolkitReducer';
 
 export const DescriptionTodoModal = ({ navigation, route }) => {
@@ -34,33 +25,35 @@ export const DescriptionTodoModal = ({ navigation, route }) => {
       <View style={{ flex: 0.8 }}>
         <Text style={styles.title}>Todo details</Text>
         <View style={[styles.item(dimentions.screen.width)]}>
-          <Text style={styles.lableText}>Title: {todoTitle}</Text>
+          <Text style={[styles.lableText, { left: 50 }]}>Title: </Text>
+          <Text style={[styles.lableText, { right: 50 }]}>{todoTitle}</Text>
         </View>
         <View style={[styles.item(dimentions.screen.width)]}>
-          <Text style={styles.lableText}>Description: {todoDescription}</Text>
-        </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
-          <Text style={styles.lableText}>
-            Status: {todoStatusDone ? 'Done' : 'Not done'}
+          <Text style={[styles.lableText, { left: 50 }]}>Description: </Text>
+          <Text style={[styles.lableText, { right: 50 }]}>
+            {todoDescription}
           </Text>
         </View>
         <View style={[styles.item(dimentions.screen.width)]}>
-          <Text style={styles.lableText}>
-            Execution date: {todoExecutionDate}
+          <Text style={[styles.lableText, { left: 50 }]}>Status:</Text>
+          <Text style={[styles.lableText, { right: 50 }]}>
+            {todoStatusDone ? 'Done' : 'Not done'}
           </Text>
         </View>
         <View style={[styles.item(dimentions.screen.width)]}>
-          <Text style={styles.lableText}>
-            Execution time: {todoExecutionTime}
+          <Text style={[styles.lableText, { left: 50 }]}>Execution date:</Text>
+          <Text style={[styles.lableText, { right: 50 }]}>
+            {todoExecutionDate}
           </Text>
         </View>
-        <View
-          style={[
-            styles.item(dimentions.screen.width),
-            styles.removeView(dimentions.screen.width),
-          ]}
-        >
-          <Text style={styles.lableText}>Delete todo: </Text>
+        <View style={[styles.item(dimentions.screen.width)]}>
+          <Text style={[styles.lableText, { left: 50 }]}>Execution time:</Text>
+          <Text style={[styles.lableText, { right: 50 }]}>
+            {todoExecutionTime}
+          </Text>
+        </View>
+        <View style={[styles.item(dimentions.screen.width)]}>
+          <Text style={[styles.lableText, { left: 50 }]}>Delete todo: </Text>
           <View style={styles.removeTodo}>
             <Button title='Remove' color='red' onPress={removeTodoHandler} />
           </View>
@@ -68,10 +61,15 @@ export const DescriptionTodoModal = ({ navigation, route }) => {
       </View>
 
       <View style={{ flex: 0.2, justifyContent: 'flex-end' }}>
-        <View style={[styles.footerButton, { borderColor: '#0B3C49' }]}>
+        <View
+          style={[
+            styles.footerButton,
+            { borderColor: 'blue', backgroundColor: 'white' },
+          ]}
+        >
           <Button
             title='Close settings'
-            color='#0B3C49'
+            color='blue'
             onPress={() => {
               navigation.goBack();
             }}
@@ -86,49 +84,40 @@ const styles = StyleSheet.create({
   container: {
     paddingVertical: 60,
     flex: 1,
-    backgroundColor: '#FEC3A6',
+    backgroundColor: '#56E39F',
   },
-  title: { fontSize: 24, marginBottom: 30, alignSelf: 'center' },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    alignSelf: 'center',
+    color: 'white',
+  },
   item: (widthScreen) => {
-    const width = widthScreen - 0;
     return {
-      backgroundColor: '#FFFDFD',
-      justifyContent: 'space-around',
+      flexDirection: 'row',
+      backgroundColor: '#59C9A5',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      marginVertical: 10,
+      marginVertical: 1,
       height: 70,
-      width,
+      width: widthScreen,
     };
   },
   lableText: {
-    color: 'black',
+    color: 'white',
     fontSize: 20,
-  },
-
-  shadow: {
-    shadowColor: '#7F5DF0',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5,
-  },
-  checkBox: { marginLeft: 15 },
-  removeView: (widthScreen) => {
-    return { flexDirection: 'row' };
+    fontWeight: 'bold',
   },
   removeTodo: {
-    borderColor: 'red',
-    backgroundColor: '#c4c4c4',
-    borderWidth: 1,
+    backgroundColor: 'white',
     borderRadius: 5,
     marginHorizontal: 10,
     marginVertical: 10,
+    right: 40,
   },
   footerButton: {
-    borderWidth: 3,
+    borderWidth: 1,
     borderRadius: 5,
     marginHorizontal: 10,
     marginVertical: 5,

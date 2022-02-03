@@ -1,17 +1,8 @@
-import { useState } from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  Alert,
-  View,
-  Button,
-  TouchableOpacity,
-} from 'react-native';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { StyleSheet, TextInput, View, TouchableOpacity } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useDimensions } from '@react-native-community/hooks';
-import { addTodo } from '../../Redux/toolkitReducer';
 
 export const Input = ({
   checkedAll,
@@ -22,13 +13,18 @@ export const Input = ({
   setCheckedOnlyNotDone,
   value,
   setValue,
-  isSearchFocus,
-  setIsSearchFocus,
+  isSearchFooter,
+  setIsSearchFooter,
   inputRef,
   searchHandler,
 }) => {
-  const dispatch = useDispatch();
   const dimentions = useDimensions();
+
+  useEffect(() => {
+    if (!checkedAll && !checkedOnlyDone && !checkedOnlyNotDone) {
+      setCheckedAll(true);
+    }
+  }, [checkedAll, checkedOnlyDone, checkedOnlyNotDone]);
 
   const searchSettingsHandler = (key) => {
     key === 'all' ? setCheckedAll(!checkedAll) : setCheckedAll(false);
@@ -41,13 +37,14 @@ export const Input = ({
   };
 
   function inputHandler(text) {
+    setIsSearchFooter(false);
     setValue(text);
   }
 
   return (
     <View>
       <TouchableOpacity onPress={searchHandler}>
-        <View style={styles.block(dimentions.screen.width, isSearchFocus)}>
+        <View style={styles.block(dimentions.screen.width, isSearchFooter)}>
           <EvilIcons name='search' size={30} />
           <TextInput
             style={styles.input}
@@ -55,61 +52,48 @@ export const Input = ({
             ref={inputRef}
             value={value}
             placeholder='   Search'
-            onFocus={() => setIsSearchFocus(true)}
-            onEndEditing={() => setIsSearchFocus(false)}
+            onFocus={() => setIsSearchFooter(true)}
+            onEndEditing={() => setIsSearchFooter(false)}
             autoCorrect={false}
             autoCapitalize='none'
           />
         </View>
       </TouchableOpacity>
-      {isSearchFocus && (
-        <View
-          style={[styles.searchTab(dimentions.screen.width), styles.shadow]}
-        >
-          <BouncyCheckbox
-            size={25}
-            fillColor='black'
-            unfillColor='#FFFFFF'
-            text='Всі'
-            isChecked={checkedAll}
-            disableBuiltInState
-            style={styles.checkBox}
-            iconStyle={{ borderColor: 'blue' }}
-            textStyle={{
-              textDecorationLine: 'none',
-            }}
-            onPress={() => searchSettingsHandler('all')}
-          />
-          <BouncyCheckbox
-            size={25}
-            fillColor='black'
-            unfillColor='#FFFFFF'
-            text='Тільки виконані'
-            isChecked={checkedOnlyDone}
-            disableBuiltInState
-            style={styles.checkBox}
-            iconStyle={{ borderColor: 'blue' }}
-            textStyle={{
-              textDecorationLine: 'none',
-            }}
-            onPress={() => searchSettingsHandler('onlyDone')}
-          />
-          <BouncyCheckbox
-            size={25}
-            fillColor='black'
-            unfillColor='#FFFFFF'
-            text='Тільки не виконані'
-            isChecked={checkedOnlyNotDone}
-            disableBuiltInState
-            style={styles.checkBox}
-            iconStyle={{ borderColor: 'blue' }}
-            textStyle={{
-              textDecorationLine: 'none',
-            }}
-            onPress={() => searchSettingsHandler('onlyNotDone')}
-          />
-        </View>
-      )}
+      <View style={styles.searchTab(dimentions.screen.width, isSearchFooter)}>
+        <BouncyCheckbox
+          size={25}
+          fillColor='black'
+          unfillColor='#FFFFFF'
+          text='Всі'
+          isChecked={checkedAll}
+          disableBuiltInState
+          style={styles.checkBox}
+          textStyle={{ textDecorationLine: 'none' }}
+          onPress={() => searchSettingsHandler('all')}
+        />
+        <BouncyCheckbox
+          size={25}
+          fillColor='black'
+          unfillColor='#FFFFFF'
+          text='Тільки виконані'
+          isChecked={checkedOnlyDone}
+          disableBuiltInState
+          style={styles.checkBox}
+          textStyle={{ textDecorationLine: 'none' }}
+          onPress={() => searchSettingsHandler('onlyDone')}
+        />
+        <BouncyCheckbox
+          size={25}
+          fillColor='black'
+          unfillColor='#FFFFFF'
+          text='Тільки не виконані'
+          isChecked={checkedOnlyNotDone}
+          disableBuiltInState
+          style={styles.checkBox}
+          textStyle={{ textDecorationLine: 'none' }}
+          onPress={() => searchSettingsHandler('onlyNotDone')}
+        />
+      </View>
     </View>
   );
 };
@@ -142,15 +126,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: '#3949ab',
   },
-  button: {
-    marginRight: 10,
-  },
-  searchTab: (widthScreen) => {
+  searchTab: (widthScreen, isSearchFooter) => {
     const width = widthScreen - 40;
+    const display = isSearchFooter ? 'flex' : 'none';
     return {
+      display,
       backgroundColor: '#ffffff',
       justifyContent: 'space-around',
-      alignItems: 'left',
       paddingHorizontal: 10,
       height: 130,
       width,
@@ -159,16 +141,6 @@ const styles = StyleSheet.create({
       borderBottomRightRadius: 15,
       borderBottomLeftRadius: 15,
     };
-  },
-  shadow: {
-    shadowColor: '#7F5DF0',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5,
   },
   checkBox: { marginLeft: 15 },
 });
