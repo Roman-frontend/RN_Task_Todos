@@ -1,12 +1,47 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParams } from '../../navigation/types';
 import { useDimensions } from '@react-native-community/hooks';
 import { useDispatch } from 'react-redux';
 import { removeTodo } from '../../Redux/toolkitReducer';
+import { RouteProp } from '@react-navigation/core';
 
-export const DescriptionTodoModal = ({ navigation, route }) => {
+type ScreenNavigationProp<T extends keyof RootStackParams> =
+  StackNavigationProp<RootStackParams, T>;
+
+type ScreenRouteProp<T extends keyof RootStackParams> = RouteProp<
+  RootStackParams,
+  T
+>;
+type Props<T extends keyof RootStackParams> = {
+  route: ScreenRouteProp<T>;
+  navigation: ScreenNavigationProp<T>;
+};
+
+type Style = {
+  container: ViewStyle;
+  title: TextStyle;
+  item: ViewStyle;
+  lableText: TextStyle;
+  removeTodo: ViewStyle;
+  footerButton: ViewStyle;
+};
+
+export const DescriptionTodoModal: React.FC<Props<'Description'>> = ({
+  navigation,
+  route,
+}) => {
   const dimentions = useDimensions();
   const dispatch = useDispatch();
+  console.log(route);
   const {
     todoTitle,
     todoDescription,
@@ -24,35 +59,35 @@ export const DescriptionTodoModal = ({ navigation, route }) => {
     <View style={styles.container}>
       <View style={{ flex: 0.8 }}>
         <Text style={styles.title}>Todo details</Text>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Title: </Text>
           <Text style={[styles.lableText, { right: 50 }]}>{todoTitle}</Text>
         </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Description: </Text>
           <Text style={[styles.lableText, { right: 50 }]}>
             {todoDescription}
           </Text>
         </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Status:</Text>
           <Text style={[styles.lableText, { right: 50 }]}>
             {todoStatusDone ? 'Done' : 'Not done'}
           </Text>
         </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Execution date:</Text>
           <Text style={[styles.lableText, { right: 50 }]}>
             {todoExecutionDate}
           </Text>
         </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Execution time:</Text>
           <Text style={[styles.lableText, { right: 50 }]}>
             {todoExecutionTime}
           </Text>
         </View>
-        <View style={[styles.item(dimentions.screen.width)]}>
+        <View style={[styles.item, { width: dimentions.screen.width }]}>
           <Text style={[styles.lableText, { left: 50 }]}>Delete todo: </Text>
           <View style={styles.removeTodo}>
             <Button title='Remove' color='red' onPress={removeTodoHandler} />
@@ -80,7 +115,7 @@ export const DescriptionTodoModal = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
   container: {
     paddingVertical: 60,
     flex: 1,
@@ -93,16 +128,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: 'white',
   },
-  item: (widthScreen) => {
-    return {
-      flexDirection: 'row',
-      backgroundColor: '#59C9A5',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginVertical: 1,
-      height: 70,
-      width: widthScreen,
-    };
+  item: {
+    flexDirection: 'row',
+    backgroundColor: '#59C9A5',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 1,
+    height: 70,
   },
   lableText: {
     color: 'white',
@@ -119,8 +151,7 @@ const styles = StyleSheet.create({
   footerButton: {
     borderWidth: 1,
     borderRadius: 5,
-    marginHorizontal: 10,
     marginVertical: 5,
-    marginHorizontal: 80,
+    marginHorizontal: 90,
   },
 });

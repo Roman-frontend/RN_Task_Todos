@@ -1,6 +1,9 @@
 import { StyleSheet, View, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export function AddTodoFooter({ navigation, addTodoHandler }) {
+export function AddTodoFooter({ addTodoHandler }) {
+  const navigation = useNavigation();
+
   return (
     <View style={{ flex: 0.2 }}>
       <View style={styles.footerButtons}>

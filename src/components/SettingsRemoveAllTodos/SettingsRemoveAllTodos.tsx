@@ -6,13 +6,25 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
+  ViewStyle,
+  TextStyle,
 } from 'react-native';
 import { useDimensions } from '@react-native-community/hooks';
 import { useDispatch } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { removeAllTodos } from '../../Redux/toolkitReducer';
 
-const CONFIRM_REMOVE_TEXT = 'Remove all todos';
+type Style = {
+  inputConfirm: ViewStyle;
+  inputLabel: TextStyle;
+  inputFieldConfirm: ViewStyle;
+  errorText: TextStyle;
+  successRemoved: ViewStyle;
+  successRemovedLabel: TextStyle;
+  buttonRemoveAll: ViewStyle;
+};
+
+const CONFIRM_REMOVE_TEXT: string = 'Remove all todos';
 
 export function SettingsRemoveAllTodos() {
   const dispatch = useDispatch();
@@ -22,7 +34,15 @@ export function SettingsRemoveAllTodos() {
   const [isFailConfirm, setIsFailConfirm] = useState(false);
   const [isShowAlertRemovedAll, setIsShowAlertRemovedAll] = useState(false);
 
-  function removeAllHandler() {
+  useEffect(() => {
+    if (isShowAlertRemovedAll) {
+      setTimeout(() => {
+        setIsShowAlertRemovedAll(false);
+      }, 2000);
+    }
+  }, [isShowAlertRemovedAll]);
+
+  function removeAllHandler(): void {
     if (isShowInputConfirm && inputValue === CONFIRM_REMOVE_TEXT) {
       dispatch(removeAllTodos());
       setIsShowInputConfirm(false);
@@ -34,13 +54,16 @@ export function SettingsRemoveAllTodos() {
     }
   }
 
-  function showSuccesRemoveAlert() {
+  function showSuccesRemoveAlert(): JSX.Element | null {
     if (isShowAlertRemovedAll) {
       return (
-        <View style={styles.successRemoved(dimentions.screen.width)}>
-          <Text color='black' style={styles.successRemovedLabel}>
-            Success delete.
-          </Text>
+        <View
+          style={[
+            styles.successRemoved,
+            { width: dimentions.screen.width - 60 },
+          ]}
+        >
+          <Text style={styles.successRemovedLabel}>Success delete.</Text>
         </View>
       );
     }
@@ -50,7 +73,9 @@ export function SettingsRemoveAllTodos() {
   function inputConfirmHandler() {
     if (isShowInputConfirm) {
       return (
-        <View style={styles.inputConfirm(dimentions.screen.width)}>
+        <View
+          style={[styles.inputConfirm, { width: dimentions.screen.width - 60 }]}
+        >
           <Text style={styles.inputLabel}>
             Please type: "{CONFIRM_REMOVE_TEXT}" - to confirm.
           </Text>
@@ -58,7 +83,10 @@ export function SettingsRemoveAllTodos() {
             <TextInput
               placeholder={`  ${CONFIRM_REMOVE_TEXT}`}
               value={inputValue}
-              style={styles.inputFieldConfirm(dimentions.screen)}
+              style={[
+                styles.inputFieldConfirm,
+                { width: dimentions.screen.width - 140 },
+              ]}
               onChangeText={setInputValue}
               onEndEditing={removeAllHandler}
               multiline
@@ -100,57 +128,45 @@ export function SettingsRemoveAllTodos() {
   );
 }
 
-const styles = StyleSheet.create({
-  inputConfirm: (widthScreen) => {
-    const width = widthScreen - 60;
-    return {
-      backgroundColor: '#ffffff',
-      justifyContent: 'space-around',
-      height: 140,
-      width,
-      left: 10,
-      right: 20,
-      bottom: 10,
-      borderBottomRightRadius: 15,
-      borderBottomLeftRadius: 15,
-    };
+const styles = StyleSheet.create<Style>({
+  inputConfirm: {
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-around',
+    height: 140,
+    left: 10,
+    right: 20,
+    bottom: 10,
+    borderBottomRightRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   inputLabel: {
     color: 'black',
-    fontSize: 15,
     marginLeft: 10,
     fontSize: 18,
   },
-  inputFieldConfirm: (screenSize) => {
-    const width = screenSize.width - 140;
-    return {
-      marginHorizontal: 20,
-      borderBottomWidth: 1,
-      borderColor: 'blue',
-      width,
-      fontSize: 20,
-    };
+  inputFieldConfirm: {
+    marginHorizontal: 20,
+    borderBottomWidth: 1,
+    borderColor: 'blue',
+    fontSize: 20,
   },
   errorText: {
     color: 'red',
     marginLeft: 20,
     bottom: 20,
   },
-  successRemoved: (widthScreen) => {
-    const width = widthScreen - 60;
-    return {
-      backgroundColor: '#ffffff',
-      alignItems: 'center',
-      height: 50,
-      width,
-      bottom: 10,
-      left: 10,
-      right: 20,
-      borderBottomRightRadius: 15,
-      borderBottomLeftRadius: 15,
-    };
+  successRemoved: {
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    height: 50,
+    bottom: 10,
+    left: 10,
+    right: 20,
+    borderBottomRightRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   successRemovedLabel: {
+    color: 'black',
     marginTop: 10,
     fontSize: 18,
   },

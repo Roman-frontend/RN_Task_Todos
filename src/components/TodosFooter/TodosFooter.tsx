@@ -1,13 +1,30 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ViewStyle } from 'react-native';
 import { useDimensions } from '@react-native-community/hooks';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
+import { ScreenNavigationProp } from '../../navigation/types';
 
-export function TodosFooter({ navigation, searchHandler }) {
+interface Props {
+  navigation: ScreenNavigationProp<'Todos'>;
+  searchHandler: () => void;
+}
+
+type Style = {
+  footer: ViewStyle;
+  shadow: ViewStyle;
+};
+
+export function TodosFooter({ navigation, searchHandler }: Props) {
   const dimentions = useDimensions();
 
   return (
-    <View style={[styles.footer(dimentions.screen.width), styles.shadow]}>
+    <View
+      style={[
+        styles.footer,
+        styles.shadow,
+        { width: dimentions.screen.width - 40 },
+      ]}
+    >
       <TouchableOpacity
         style={{ alignSelf: 'center', right: 15 }}
         onPress={() => {
@@ -26,24 +43,19 @@ export function TodosFooter({ navigation, searchHandler }) {
   );
 }
 
-const styles = StyleSheet.create({
-  footer: (widthScreen) => {
-    const width = widthScreen - 40;
-    console.log(width, widthScreen);
-    return {
-      position: 'absolute',
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      alignContent: 'center',
-      bottom: 20,
-      left: 20,
-      right: 20,
-      elevation: 0,
-      backgroundColor: '#ffffff',
-      borderRadius: 15,
-      height: 70,
-      width,
-    };
+const styles = StyleSheet.create<Style>({
+  footer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    elevation: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    height: 70,
   },
   shadow: {
     shadowColor: '#7F5DF0',

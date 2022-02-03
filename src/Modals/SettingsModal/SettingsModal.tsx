@@ -1,11 +1,26 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 import { useDimensions } from '@react-native-community/hooks';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { SettingsFooter } from '../../components/SettingsFooter/SettingsFooter';
 import { SettingsRemoveAllTodos } from '../../components/SettingsRemoveAllTodos/SettingsRemoveAllTodos';
+import { Props } from '../../navigation/types';
 
-export const SettingsModal = ({ navigation, route }) => {
+type Style = {
+  container: ViewStyle;
+  title: TextStyle;
+  checkShowRemove: ViewStyle;
+  checkBox: ViewStyle;
+};
+
+export const SettingsModal = ({ navigation, route }: Props<'Settings'>) => {
   const { isShowRemoveTodo } = route.params;
   const dimentions = useDimensions();
   const [isCheckedShowRemoveButton, setIsCheckedShowRemoveButton] =
@@ -32,7 +47,12 @@ export const SettingsModal = ({ navigation, route }) => {
       <ScrollView>
         <View style={{ flex: 0.6 }}>
           <Text style={styles.title}>To-do list settings</Text>
-          <View style={[styles.checkShowRemove(dimentions.screen.width)]}>
+          <View
+            style={[
+              styles.checkShowRemove,
+              { width: dimentions.screen.width - 80 },
+            ]}
+          >
             <BouncyCheckbox
               size={30}
               fillColor='black'
@@ -50,25 +70,21 @@ export const SettingsModal = ({ navigation, route }) => {
         </View>
       </ScrollView>
 
-      <SettingsFooter navigation={navigation} route={route} />
+      <SettingsFooter route={route} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
   container: { marginVertical: 60, marginHorizontal: 20, flex: 1 },
   title: { fontSize: 24, marginBottom: 30, alignSelf: 'center' },
-  checkShowRemove: (widthScreen) => {
-    const width = widthScreen - 80;
-    return {
-      backgroundColor: '#ffffff',
-      justifyContent: 'space-around',
-      marginVertical: 20,
-      height: 50,
-      width,
-      left: 20,
-      right: 20,
-    };
+  checkShowRemove: {
+    backgroundColor: '#ffffff',
+    justifyContent: 'space-around',
+    marginVertical: 20,
+    height: 50,
+    left: 20,
+    right: 20,
   },
   checkBox: { marginLeft: 15 },
 });

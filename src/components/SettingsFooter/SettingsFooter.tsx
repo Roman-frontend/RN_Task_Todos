@@ -1,8 +1,24 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/core';
+import { RootStackParams } from '../../navigation/types';
 
-export function SettingsFooter({ navigation, route }) {
+type ScreenNavigationProp<T extends keyof RootStackParams> =
+  StackNavigationProp<RootStackParams, T>;
+
+type ScreenRouteProp<T extends keyof RootStackParams> = RouteProp<
+  RootStackParams,
+  T
+>;
+type Props<T extends keyof RootStackParams> = {
+  route: ScreenRouteProp<T>;
+};
+
+export function SettingsFooter({ route }: Props<'Settings'>) {
   const { isShowRemoveTodo } = route.params;
+  const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
 
   return (
     <View style={{ flex: 0.4, justifyContent: 'flex-end' }}>
@@ -31,8 +47,7 @@ const styles = StyleSheet.create({
   footerButton: {
     borderWidth: 1,
     borderRadius: 5,
-    marginHorizontal: 10,
     marginVertical: 5,
-    marginHorizontal: 50,
+    marginHorizontal: 60,
   },
 });

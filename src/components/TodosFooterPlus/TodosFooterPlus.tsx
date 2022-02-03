@@ -1,13 +1,26 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ViewStyle } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import { useDimensions } from '@react-native-community/hooks';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { ScreenNavigationProp } from '../../navigation/types';
 
-export function TodosFooterPlus({ navigation }) {
+type Style = {
+  viewButton: ViewStyle;
+  plusButton: ViewStyle;
+  shadow: ViewStyle;
+};
+
+export function TodosFooterPlus() {
   const dimentions = useDimensions();
+  const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
 
   return (
     <TouchableOpacity
-      style={[styles.plusButton(dimentions.screen.width), styles.shadow]}
+      style={[
+        styles.plusButton,
+        styles.shadow,
+        { left: dimentions.screen.width / 2 - 40 },
+      ]}
     >
       <View style={styles.viewButton}>
         <AntDesign
@@ -23,7 +36,7 @@ export function TodosFooterPlus({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
   viewButton: {
     width: 80,
     height: 80,
@@ -32,16 +45,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  plusButton: (widthScreen) => {
-    const rightButton = widthScreen / 2 - 40;
-    return {
-      position: 'absolute',
-      bottom: 50,
-      left: rightButton,
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1,
-    };
+  plusButton: {
+    position: 'absolute',
+    bottom: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
   },
   shadow: {
     shadowColor: '#7F5DF0',

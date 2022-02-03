@@ -6,6 +6,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  ViewStyle,
+  TextStyle,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDimensions } from '@react-native-community/hooks';
@@ -13,8 +15,17 @@ import { useDispatch } from 'react-redux';
 import { addTodo } from '../../Redux/toolkitReducer';
 import { AddTodoFooter } from '../../components/AddTodoFooter/AddTodoFooter';
 import { AddTodoDateTimePicker } from '../../components/AddTodoDateTimePicker/AddTodoDateTimePicker';
+import { Props } from '../../navigation/types';
 
-export const AddTodoModalScreen = ({ navigation }) => {
+type Style = {
+  container: ViewStyle;
+  label: TextStyle;
+  title: TextStyle;
+  item: ViewStyle;
+  errorText: TextStyle;
+};
+
+export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
   const dimentions = useDimensions();
   const dispatch = useDispatch();
   const [isClickedAdd, setIsClickedAdd] = useState(false);
@@ -41,17 +52,28 @@ export const AddTodoModalScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView>
         <View style={{ flex: 0.8 }}>
           <Text style={styles.title}>Add to-do</Text>
 
           <Text style={styles.label}>Name:</Text>
-          <View style={styles.item(isClickedAdd, !!!name.trim())}>
+          <View
+            style={[
+              styles.item,
+              {
+                borderColor: !isClickedAdd
+                  ? 'blue'
+                  : !!!name.trim()
+                  ? 'red'
+                  : 'green',
+              },
+            ]}
+          >
             <TextInput
               placeholder='Enter the to-do name'
               value={name}
               onChangeText={setName}
-              style={styles.input(dimentions.screen)}
+              style={{ height: 30, width: dimentions.screen.width - 180 }}
               multiline
               autoCorrect={false}
               autoCapitalize='none'
@@ -60,18 +82,23 @@ export const AddTodoModalScreen = ({ navigation }) => {
               <Entypo name='check' size={20} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.errorText(isClickedAdd, !!!name.trim())}>
+          <Text
+            style={[
+              styles.errorText,
+              { display: isClickedAdd && !!!name.trim() ? 'flex' : 'none' },
+            ]}
+          >
             Require
           </Text>
 
           <Text style={styles.label}>Description:</Text>
-          <View style={styles.item()}>
+          <View style={styles.item}>
             <TextInput
               placeholder='Enter the to-do description'
               multiline
               value={description}
               onChangeText={setDescription}
-              style={styles.input(dimentions.screen)}
+              style={{ height: 30, width: dimentions.screen.width - 180 }}
               autoCorrect={false}
               autoCapitalize='none'
             />
@@ -91,36 +118,23 @@ export const AddTodoModalScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
   container: { marginTop: 60, marginHorizontal: 60, flex: 1 },
   title: { fontSize: 24, marginBottom: 10, alignSelf: 'center' },
   label: { marginTop: 10 },
-  item: (isClickedAdd, isError = false) => {
-    return {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      alignItems: 'center',
-      padding: 15,
-      borderColor: !isClickedAdd ? 'blue' : isError ? 'red' : 'green',
-      borderWidth: 1,
-      borderRadius: 5,
-      marginVertical: 10,
-    };
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    padding: 15,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginVertical: 10,
   },
-  input: (screenSize) => {
-    const width = screenSize.width - 180;
-    return {
-      height: 30,
-      width,
-    };
-  },
-  errorText: (isClickedAdd, isError = false) => {
-    return {
-      display: isClickedAdd && isError ? 'flex' : 'none',
-      bottom: 10,
-      color: 'red',
-    };
+  errorText: {
+    bottom: 10,
+    color: 'red',
   },
 });
