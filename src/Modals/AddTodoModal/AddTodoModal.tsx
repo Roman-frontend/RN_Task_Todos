@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,11 +11,12 @@ import {
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDimensions } from '@react-native-community/hooks';
-import { useDispatch } from 'react-redux';
-import { addTodo } from '../../Redux/toolkitReducer';
-import { AddTodoFooter } from '../../components/AddTodoFooter/AddTodoFooter';
-import { AddTodoDateTimePicker } from '../../components/AddTodoDateTimePicker/AddTodoDateTimePicker';
+import { todosSlice } from '../../Redux/reducers/todosReducer';
+import { AddTodoFooter } from './Footer';
+import { AddTodoDateTimePicker } from './DateTimePicker';
 import { Props } from '../../navigation/types';
+import { useAppDispatch } from '../../hooks/redux';
+import { Todo } from '../../Redux/reducers/todosReducer';
 
 type Style = {
   container: ViewStyle;
@@ -26,24 +27,31 @@ type Style = {
 };
 
 export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
+  const { addTodo } = todosSlice.actions;
+  const dispatch = useAppDispatch();
   const dimentions = useDimensions();
-  const dispatch = useDispatch();
-  const [isClickedAdd, setIsClickedAdd] = useState(false);
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [date, setDate] = useState('empty');
-  const [time, setTime] = useState('empty');
+  const [isClickedAdd, setIsClickedAdd] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [date, setDate] = useState<string>('empty');
+  const [time, setTime] = useState<string>('empty');
+  const inputNameRef = useRef<any>();
 
-  function addTodoHandler() {
+  useEffect(() => {
+    inputNameRef?.current?.focus();
+  }, []);
+
+  function addTodoHandler(): void {
     setIsClickedAdd(true);
 
     if (name.trim()) {
-      const data = {
+      const data: Todo = {
         title: name,
         description,
         statusDone: false,
         executionDate: date,
         executionTime: time,
+        id: Math.random(),
       };
       dispatch(addTodo(data));
       navigation.goBack();
@@ -51,8 +59,8 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+    <ScrollView>
+      <View style={styles.container}>
         <View style={{ flex: 0.8 }}>
           <Text style={styles.title}>Add to-do</Text>
 
@@ -73,12 +81,13 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
               placeholder='Enter the to-do name'
               value={name}
               onChangeText={setName}
+              ref={inputNameRef}
               style={{ height: 30, width: dimentions.screen.width - 180 }}
               multiline
               autoCorrect={false}
               autoCapitalize='none'
             />
-            <TouchableOpacity onPress={() => console.log('to-do name')}>
+            <TouchableOpacity>
               <Entypo name='check' size={20} />
             </TouchableOpacity>
           </View>
@@ -109,12 +118,9 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
 
           <AddTodoDateTimePicker setDate={setDate} setTime={setTime} />
         </View>
-        <AddTodoFooter
-          navigation={navigation}
-          addTodoHandler={addTodoHandler}
-        />
-      </ScrollView>
-    </View>
+        <AddTodoFooter addTodoHandler={addTodoHandler} />
+      </View>
+    </ScrollView>
   );
 };
 

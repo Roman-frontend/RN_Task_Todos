@@ -8,11 +8,11 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { useDispatch } from 'react-redux';
 import { useDimensions } from '@react-native-community/hooks';
-import { removeTodo, doneTodo } from '../../Redux/toolkitReducer';
+import { todosSlice } from '../../Redux/reducers/todosReducer';
 import { RootStackParams } from '../../navigation/types';
 import { ScreenNavigationProp } from '../../navigation/types';
+import { useAppDispatch } from '../../hooks/redux';
 
 type Props<T extends keyof RootStackParams> = {
   todo: ITodo;
@@ -22,11 +22,11 @@ type Props<T extends keyof RootStackParams> = {
 
 interface ITodo {
   title: string;
-  description?: string;
+  description: string | number | undefined;
   statusDone: boolean;
   executionDate: string;
   executionTime: string;
-  id: string;
+  id: string | number;
 }
 
 type Style = {
@@ -38,7 +38,8 @@ export function Todo({
   isShowRemoveTodo,
   navigation,
 }: Props<'Todos'>): JSX.Element {
-  const dispatch = useDispatch();
+  const { doneTodo, removeTodo } = todosSlice.actions;
+  const dispatch = useAppDispatch();
   const dimentions = useDimensions();
 
   useEffect(() => {
@@ -68,12 +69,12 @@ export function Todo({
     });
   }
 
-  function removeTodoHandler(): void {
-    dispatch(removeTodo(todo.id));
-  }
-
   function doneTodoHandler(): void {
     dispatch(doneTodo({ id: todo.id, status: !todo.statusDone }));
+  }
+
+  function removeTodoHandler(): void {
+    dispatch(removeTodo(todo.id));
   }
 
   return (

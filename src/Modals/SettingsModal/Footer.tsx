@@ -1,27 +1,17 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { StyleSheet, View, Button } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/core';
-import { RootStackParams } from '../../navigation/types';
+import { ScreenRouteProp, ScreenNavigationProp } from '../../navigation/types';
 
-type ScreenNavigationProp<T extends keyof RootStackParams> =
-  StackNavigationProp<RootStackParams, T>;
-
-type ScreenRouteProp<T extends keyof RootStackParams> = RouteProp<
-  RootStackParams,
-  T
->;
-type Props<T extends keyof RootStackParams> = {
-  route: ScreenRouteProp<T>;
-};
-
-export function SettingsFooter({ route }: Props<'Settings'>) {
-  const { isShowRemoveTodo } = route.params;
+export function SettingsFooter() {
+  const { params } = useRoute<ScreenRouteProp<'Settings'>>();
+  const isShowRemoveTodo: boolean = params?.isShowRemoveTodo
+    ? params?.isShowRemoveTodo
+    : false;
   const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
 
   return (
-    <View style={{ flex: 0.4, justifyContent: 'flex-end' }}>
+    <View style={{ flex: 0.5, justifyContent: 'flex-end', marginBottom: 30 }}>
       <View style={[styles.footerButton, { borderColor: 'blue' }]}>
         <Button
           title='Apply settings'

@@ -3,9 +3,9 @@ import { useDimensions } from '@react-native-community/hooks';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Feather from 'react-native-vector-icons/Feather';
 import { ScreenNavigationProp } from '../../navigation/types';
+import { useNavigation } from '@react-navigation/core';
 
 interface Props {
-  navigation: ScreenNavigationProp<'Todos'>;
   searchHandler: () => void;
 }
 
@@ -14,8 +14,9 @@ type Style = {
   shadow: ViewStyle;
 };
 
-export function TodosFooter({ navigation, searchHandler }: Props) {
+export function TodosFooter({ searchHandler }: Props) {
   const dimentions = useDimensions();
+  const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
 
   return (
     <View

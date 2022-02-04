@@ -1,7 +1,17 @@
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, ViewStyle } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-export function AddTodoFooter({ addTodoHandler }) {
+interface Ptops {
+  addTodoHandler: () => void;
+}
+
+type Style = {
+  footerButtons: ViewStyle;
+  buttonClose: ViewStyle;
+  buttonAdd: ViewStyle;
+};
+
+export function AddTodoFooter({ addTodoHandler }: Ptops) {
   const navigation = useNavigation();
 
   return (
@@ -25,7 +35,7 @@ export function AddTodoFooter({ addTodoHandler }) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
   footerButtons: {
     marginTop: 30,
     marginVertical: 20,

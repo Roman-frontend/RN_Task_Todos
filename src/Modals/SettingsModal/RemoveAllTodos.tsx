@@ -10,9 +10,9 @@ import {
   TextStyle,
 } from 'react-native';
 import { useDimensions } from '@react-native-community/hooks';
-import { useDispatch } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { removeAllTodos } from '../../Redux/toolkitReducer';
+import { todosSlice } from '../../Redux/reducers/todosReducer';
+import { useAppDispatch } from '../../hooks/redux';
 
 type Style = {
   inputConfirm: ViewStyle;
@@ -27,12 +27,14 @@ type Style = {
 const CONFIRM_REMOVE_TEXT: string = 'Remove all todos';
 
 export function SettingsRemoveAllTodos() {
-  const dispatch = useDispatch();
+  const { removeAllTodos } = todosSlice.actions;
+  const dispatch = useAppDispatch();
   const dimentions = useDimensions();
-  const [inputValue, setInputValue] = useState('');
-  const [isShowInputConfirm, setIsShowInputConfirm] = useState(false);
-  const [isFailConfirm, setIsFailConfirm] = useState(false);
-  const [isShowAlertRemovedAll, setIsShowAlertRemovedAll] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isShowInputConfirm, setIsShowInputConfirm] = useState<boolean>(false);
+  const [isFailConfirm, setIsFailConfirm] = useState<boolean>(false);
+  const [isShowAlertRemovedAll, setIsShowAlertRemovedAll] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (isShowAlertRemovedAll) {
@@ -70,7 +72,7 @@ export function SettingsRemoveAllTodos() {
     return null;
   }
 
-  function inputConfirmHandler() {
+  function inputConfirmHandler(): JSX.Element | null {
     if (isShowInputConfirm) {
       return (
         <View

@@ -7,11 +7,11 @@ export type RootStackParams = {
   Settings: { isShowRemoveTodo: boolean } | undefined;
   Description: {
     todoTitle: string;
-    todoDescription: string | undefined;
+    todoDescription: string | number | undefined;
     todoStatusDone: boolean;
     todoExecutionDate: string;
     todoExecutionTime: string;
-    todoId: string;
+    todoId: string | number;
   };
 };
 

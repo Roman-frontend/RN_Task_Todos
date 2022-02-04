@@ -54,7 +54,7 @@ export const Input = ({
     }
   }, [checkedAll, checkedOnlyDone, checkedOnlyNotDone]);
 
-  const searchSettingsHandler = (key) => {
+  const searchSettingsHandler = (key: string): void => {
     key === 'all' ? setCheckedAll(!checkedAll) : setCheckedAll(false);
     key === 'onlyDone'
       ? setCheckedOnlyDone(!checkedOnlyDone)
@@ -64,7 +64,7 @@ export const Input = ({
       : setCheckedOnlyNotDone(false);
   };
 
-  function inputHandler(text) {
+  function inputHandler(text: string): void {
     setIsSearchFooter(false);
     setValue(text);
   }

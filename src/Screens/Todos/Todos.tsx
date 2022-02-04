@@ -7,29 +7,14 @@ import {
   ViewStyle,
   TextInput,
 } from 'react-native';
-import { useSelector } from 'react-redux';
 import { useDimensions } from '@react-native-community/hooks';
-import { Todo } from '../../components/Todo/Todo';
-import { Input } from '../../components/Input/Input';
-import { TodosFooterPlus } from '../../components/TodosFooterPlus/TodosFooterPlus';
-import { TodosFooter } from '../../components/TodosFooter/TodosFooter';
+import { Todo } from './Todo';
+import { Input } from './Input';
+import { TodosFooterPlus } from './PlusFooter';
+import { TodosFooter } from './Footer';
 import { useNavigation } from '@react-navigation/native';
 import { Props, ScreenNavigationProp } from '../../navigation/types';
-
-interface ITodo {
-  title: string;
-  description?: string;
-  statusDone: boolean;
-  executionDate: string;
-  executionTime: string;
-  id: string;
-}
-
-interface ITodos {
-  toolkit: {
-    todos: ITodo[];
-  };
-}
+import { useAppSelector } from '../../hooks/redux';
 
 type Style = {
   container: ViewStyle;
@@ -37,14 +22,14 @@ type Style = {
 };
 
 export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
-  const todos = useSelector((state: ITodos) => state.toolkit.todos);
+  const { todos } = useAppSelector((state) => state.todosReducer);
   const dimentions = useDimensions();
   const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
-  const [isSearchFooter, setIsSearchFooter] = useState(false);
-  const [inputSearchValue, setInputSearchValue] = useState('');
-  const [checkedAll, setCheckedAll] = useState(true);
-  const [checkedOnlyDone, setCheckedOnlyDone] = useState(false);
-  const [checkedOnlyNotDone, setCheckedOnlyNotDone] = useState(false);
+  const [isSearchFooter, setIsSearchFooter] = useState<boolean>(false);
+  const [inputSearchValue, setInputSearchValue] = useState<string>('');
+  const [checkedAll, setCheckedAll] = useState<boolean>(true);
+  const [checkedOnlyDone, setCheckedOnlyDone] = useState<boolean>(false);
+  const [checkedOnlyNotDone, setCheckedOnlyNotDone] = useState<boolean>(false);
   const inputRef = useRef<TextInput | undefined>();
 
   const copyTodos = useMemo(() => {
@@ -77,7 +62,7 @@ export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
     return prevTodos.reverse();
   }, [filteredTodos]);
 
-  const searchHandler = () => {
+  const searchHandler = (): void => {
     if (isSearchFooter) {
       return inputRef?.current?.blur();
     }
@@ -129,7 +114,7 @@ export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
         </Pressable>
       </View>
       <TodosFooterPlus />
-      <TodosFooter navigation={navigation} searchHandler={searchHandler} />
+      <TodosFooter searchHandler={searchHandler} />
     </View>
   );
 };
