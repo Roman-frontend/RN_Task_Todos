@@ -16,12 +16,15 @@ import { ScrollView } from 'react-native-gesture-handler';
 type dataElement = string | number | undefined;
 
 type Style = {
-  container: ViewStyle;
+  containerHigher: ViewStyle;
+  containerMain: ViewStyle;
   title: TextStyle;
   item: ViewStyle;
   content: ViewStyle;
-  lableText: TextStyle;
+  itemText: TextStyle;
+  containerFooter: ViewStyle;
   removeView: ViewStyle;
+  itemRemoveLabel: TextStyle;
   removeTodo: ViewStyle;
   footerButton: ViewStyle;
 };
@@ -46,10 +49,10 @@ export const DescriptionTodoModal: React.FC<Props<'Description'>> = ({
     return (
       <View style={[styles.removeView, { width: dimentions.screen.width }]}>
         <View style={[styles.content]}>
-          <Text style={[styles.lableText, { marginLeft: 20 }]}>{label}</Text>
+          <Text style={[styles.itemText]}>{label}</Text>
         </View>
         <View style={[styles.content]}>
-          <Text style={[styles.lableText, { left: 5 }]}>{data}</Text>
+          <Text style={[styles.itemText]}>{data}</Text>
         </View>
       </View>
     );
@@ -61,8 +64,13 @@ export const DescriptionTodoModal: React.FC<Props<'Description'>> = ({
   }
 
   return (
-    <View style={[styles.container, { height: dimentions.screen.width - 200 }]}>
-      <View style={{ flex: 0.9 }}>
+    <View
+      style={[
+        styles.containerHigher,
+        { height: dimentions.screen.width - 200 },
+      ]}
+    >
+      <View style={styles.containerMain}>
         <Text style={styles.title}>Todo details</Text>
         <ScrollView>
           {createItem('Title', todoTitle)}
@@ -71,23 +79,23 @@ export const DescriptionTodoModal: React.FC<Props<'Description'>> = ({
           {createItem('Execution date', todoExecutionDate)}
           {createItem('Execution time', todoExecutionTime)}
           <View style={[styles.removeView, { width: dimentions.screen.width }]}>
-            <Text style={[styles.lableText, { left: 20, alignSelf: 'center' }]}>
+            <Text style={[styles.itemText, styles.itemRemoveLabel]}>
               Delete todo:{' '}
             </Text>
-            <View style={styles.removeTodo}>
+            <View
+              style={[
+                styles.removeTodo,
+                { width: dimentions.screen.width / 2 - 20 },
+              ]}
+            >
               <Button title='Remove' color='red' onPress={removeTodoHandler} />
             </View>
           </View>
         </ScrollView>
       </View>
 
-      <View style={{ flex: 0.1, justifyContent: 'flex-end' }}>
-        <View
-          style={[
-            styles.footerButton,
-            { borderColor: 'blue', backgroundColor: 'white' },
-          ]}
-        >
+      <View style={styles.containerFooter}>
+        <View style={[styles.footerButton]}>
           <Button
             title='Close settings'
             color='blue'
@@ -102,10 +110,11 @@ export const DescriptionTodoModal: React.FC<Props<'Description'>> = ({
 };
 
 const styles = StyleSheet.create<Style>({
-  container: {
+  containerHigher: {
     paddingVertical: 60,
     flex: 1,
   },
+  containerMain: { flex: 0.9 },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -125,11 +134,13 @@ const styles = StyleSheet.create<Style>({
     flexDirection: 'column',
     flex: 1,
   },
-  lableText: {
+  itemText: {
     color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
+    paddingHorizontal: 10,
   },
+  containerFooter: { flex: 0.1, justifyContent: 'flex-end' },
   removeView: {
     flexDirection: 'row',
     backgroundColor: '#f0fff5',
@@ -137,6 +148,7 @@ const styles = StyleSheet.create<Style>({
     marginVertical: 1,
     minHeight: 40,
   },
+  itemRemoveLabel: { alignSelf: 'center' },
   removeTodo: {
     backgroundColor: 'white',
     borderRadius: 5,
@@ -144,9 +156,10 @@ const styles = StyleSheet.create<Style>({
     borderColor: 'red',
     marginHorizontal: 10,
     marginVertical: 5,
-    right: 40,
   },
   footerButton: {
+    borderColor: 'blue',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderRadius: 5,
     marginVertical: 5,

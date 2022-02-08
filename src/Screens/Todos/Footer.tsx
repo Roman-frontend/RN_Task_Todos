@@ -12,6 +12,8 @@ interface Props {
 type Style = {
   footer: ViewStyle;
   shadow: ViewStyle;
+  touchableSettings: ViewStyle;
+  touchableSearch: ViewStyle;
 };
 
 export function TodosFooter({ searchHandler }: Props) {
@@ -27,17 +29,14 @@ export function TodosFooter({ searchHandler }: Props) {
       ]}
     >
       <TouchableOpacity
-        style={{ alignSelf: 'center', right: 15 }}
+        style={styles.touchableSettings}
         onPress={() => {
           navigation.navigate('Settings');
         }}
       >
         <Feather name='settings' size={30} />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={{ alignSelf: 'center', left: 15 }}
-        onPress={searchHandler}
-      >
+      <TouchableOpacity style={styles.touchableSearch} onPress={searchHandler}>
         <AntDesign name='search1' size={30} />
       </TouchableOpacity>
     </View>
@@ -68,4 +67,6 @@ const styles = StyleSheet.create<Style>({
     shadowRadius: 3.5,
     elevation: 5,
   },
+  touchableSettings: { alignSelf: 'center', right: 15 },
+  touchableSearch: { alignSelf: 'center', left: 15 },
 });

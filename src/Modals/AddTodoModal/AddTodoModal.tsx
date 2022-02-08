@@ -20,9 +20,11 @@ import { Todo } from '../../Redux/reducers/todosReducer';
 
 type Style = {
   container: ViewStyle;
+  mainContainer: ViewStyle;
   label: TextStyle;
   title: TextStyle;
   item: ViewStyle;
+  input: ViewStyle;
   errorText: TextStyle;
 };
 
@@ -61,7 +63,7 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={{ flex: 0.8 }}>
+        <View style={styles.mainContainer}>
           <Text style={styles.title}>Add to-do</Text>
 
           <Text style={styles.label}>Name:</Text>
@@ -82,7 +84,7 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
               value={name}
               onChangeText={setName}
               ref={inputNameRef}
-              style={{ height: 30, width: dimentions.screen.width - 180 }}
+              style={[styles.input, { width: dimentions.screen.width - 180 }]}
               multiline
               autoCorrect={false}
               autoCapitalize='none'
@@ -107,7 +109,7 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
               multiline
               value={description}
               onChangeText={setDescription}
-              style={{ height: 30, width: dimentions.screen.width - 180 }}
+              style={[styles.input, { width: dimentions.screen.width - 180 }]}
               autoCorrect={false}
               autoCapitalize='none'
             />
@@ -126,6 +128,7 @@ export const AddTodoModalScreen = ({ navigation }: Props<'Todos'>) => {
 
 const styles = StyleSheet.create<Style>({
   container: { marginTop: 60, marginHorizontal: 60, flex: 1 },
+  mainContainer: { flex: 0.8 },
   title: { fontSize: 24, marginBottom: 10, alignSelf: 'center' },
   label: { marginTop: 10 },
   item: {
@@ -139,6 +142,7 @@ const styles = StyleSheet.create<Style>({
     borderRadius: 5,
     marginVertical: 10,
   },
+  input: { height: 30 },
   errorText: {
     bottom: 10,
     color: 'red',

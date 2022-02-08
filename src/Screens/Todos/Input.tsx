@@ -21,7 +21,7 @@ interface Props {
   setValue: React.Dispatch<React.SetStateAction<string>>;
   isSearchFooter: boolean;
   setIsSearchFooter: React.Dispatch<React.SetStateAction<boolean>>;
-  inputRef: any; //React.RefObject<TextInput | undefined>;
+  inputRef: any;
   searchHandler: () => void;
 }
 
@@ -62,6 +62,7 @@ export const Input = ({
     key === 'onlyNotDone'
       ? setCheckedOnlyNotDone(!checkedOnlyNotDone)
       : setCheckedOnlyNotDone(false);
+    setIsSearchFooter(false);
   };
 
   function inputHandler(text: string): void {

@@ -15,9 +15,13 @@ import { todosSlice } from '../../Redux/reducers/todosReducer';
 import { useAppDispatch } from '../../hooks/redux';
 
 type Style = {
-  inputConfirm: ViewStyle;
+  container: ViewStyle;
+  title: TextStyle;
+  containerInputConfirm: ViewStyle;
   inputLabel: TextStyle;
+  inputConfirmView: ViewStyle;
   inputFieldConfirm: ViewStyle;
+  inputFieldConfirmEnter: ViewStyle;
   errorText: TextStyle;
   successRemoved: ViewStyle;
   successRemovedLabel: TextStyle;
@@ -76,12 +80,15 @@ export function SettingsRemoveAllTodos() {
     if (isShowInputConfirm) {
       return (
         <View
-          style={[styles.inputConfirm, { width: dimentions.screen.width - 60 }]}
+          style={[
+            styles.containerInputConfirm,
+            { width: dimentions.screen.width - 60 },
+          ]}
         >
           <Text style={styles.inputLabel}>
             Please type: "{CONFIRM_REMOVE_TEXT}" - to confirm.
           </Text>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={styles.inputConfirmView}>
             <TextInput
               placeholder={`  ${CONFIRM_REMOVE_TEXT}`}
               value={inputValue}
@@ -96,7 +103,7 @@ export function SettingsRemoveAllTodos() {
               autoCapitalize='none'
             />
             <TouchableOpacity
-              style={{ alignSelf: 'center' }}
+              style={styles.inputFieldConfirmEnter}
               onPress={removeAllHandler}
             >
               <Entypo name='check' size={20} />
@@ -117,10 +124,8 @@ export function SettingsRemoveAllTodos() {
   }
 
   return (
-    <View style={{ marginVertical: 20 }}>
-      <Text style={{ fontSize: 24, alignSelf: 'center', marginBottom: 10 }}>
-        Remove all todos:
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Remove all todos:</Text>
       <View style={styles.buttonRemoveAll}>
         <Button title='Remove' color='red' onPress={removeAllHandler} />
       </View>
@@ -131,7 +136,9 @@ export function SettingsRemoveAllTodos() {
 }
 
 const styles = StyleSheet.create<Style>({
-  inputConfirm: {
+  container: { marginVertical: 20 },
+  title: { fontSize: 24, alignSelf: 'center', marginBottom: 10 },
+  containerInputConfirm: {
     backgroundColor: '#ffffff',
     justifyContent: 'space-around',
     height: 140,
@@ -146,12 +153,14 @@ const styles = StyleSheet.create<Style>({
     marginLeft: 10,
     fontSize: 18,
   },
+  inputConfirmView: { flexDirection: 'row' },
   inputFieldConfirm: {
     marginHorizontal: 20,
     borderBottomWidth: 1,
     borderColor: 'blue',
     fontSize: 20,
   },
+  inputFieldConfirmEnter: { alignSelf: 'center' },
   errorText: {
     color: 'red',
     marginLeft: 20,

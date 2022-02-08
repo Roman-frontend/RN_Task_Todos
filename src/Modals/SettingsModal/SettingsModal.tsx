@@ -15,9 +15,11 @@ import { Props } from '../../navigation/types';
 
 type Style = {
   container: ViewStyle;
+  containerTodoSettings: ViewStyle;
   title: TextStyle;
   checkShowRemove: ViewStyle;
   checkBox: ViewStyle;
+  checkBoxText: TextStyle;
 };
 
 export const SettingsModal = ({ navigation, route }: Props<'Settings'>) => {
@@ -47,7 +49,7 @@ export const SettingsModal = ({ navigation, route }: Props<'Settings'>) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={{ flex: 0.5 }}>
+        <View style={styles.containerTodoSettings}>
           <Text style={styles.title}>To-do list settings</Text>
           <View
             style={[
@@ -63,7 +65,7 @@ export const SettingsModal = ({ navigation, route }: Props<'Settings'>) => {
               isChecked={isCheckedShowRemoveButton}
               disableBuiltInState
               style={styles.checkBox}
-              textStyle={{ textDecorationLine: 'none', fontSize: 20 }}
+              textStyle={styles.checkBoxText}
               onPress={showRemoveButtonTodoHandler}
             />
           </View>
@@ -79,6 +81,7 @@ export const SettingsModal = ({ navigation, route }: Props<'Settings'>) => {
 
 const styles = StyleSheet.create<Style>({
   container: { marginTop: 60, marginHorizontal: 20, flex: 1 },
+  containerTodoSettings: { flex: 0.5 },
   title: { fontSize: 24, marginBottom: 30, alignSelf: 'center' },
   checkShowRemove: {
     backgroundColor: '#ffffff',
@@ -89,4 +92,5 @@ const styles = StyleSheet.create<Style>({
     right: 20,
   },
   checkBox: { marginLeft: 15 },
+  checkBoxText: { textDecorationLine: 'none', fontSize: 20 },
 });

@@ -18,7 +18,8 @@ import { useAppSelector } from '../../hooks/redux';
 
 type Style = {
   container: ViewStyle;
-  todos: ViewStyle;
+  input: ViewStyle;
+  todos: any;
 };
 
 export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
@@ -72,7 +73,7 @@ export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ position: 'absolute', top: 0, zIndex: 1 }}>
+      <View style={styles.input}>
         <Input
           checkedAll={checkedAll}
           setCheckedAll={setCheckedAll}
@@ -88,16 +89,7 @@ export const TodosScreen: FC<Props<'Todos'>> = ({ route }) => {
           inputRef={inputRef}
         />
       </View>
-      <View
-        style={[
-          styles.todos,
-          {
-            height: isSearchFooter
-              ? dimentions.screen.height - 400
-              : dimentions.screen.height - 270,
-          },
-        ]}
-      >
+      <View style={[styles.todos(isSearchFooter, dimentions.screen.height)]}>
         <Pressable>
           <FlatList
             data={reversedTodos}
@@ -125,9 +117,19 @@ const styles = StyleSheet.create<Style>({
     backgroundColor: '#00d4cd',
     justifyContent: 'space-around',
   },
-  todos: {
-    bottom: 10,
-    paddingHorizontal: 40,
-    paddingBottom: 20,
+  input: {
+    position: 'absolute',
+    top: 0,
+    zIndex: 1,
+  },
+  //Можу всі динамічні інлайн стилі зробити в такий спосіб але не впевнений що це коректно.
+  todos: (isSearchFooter: boolean, screenHeight: number) => {
+    const height = isSearchFooter ? screenHeight - 400 : screenHeight - 270;
+    return {
+      height,
+      bottom: 10,
+      paddingHorizontal: 40,
+      paddingBottom: 20,
+    };
   },
 });

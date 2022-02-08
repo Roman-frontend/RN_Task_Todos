@@ -6,6 +6,7 @@ interface Ptops {
 }
 
 type Style = {
+  container: ViewStyle;
   footerButtons: ViewStyle;
   buttonClose: ViewStyle;
   buttonAdd: ViewStyle;
@@ -15,7 +16,7 @@ export function AddTodoFooter({ addTodoHandler }: Ptops) {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 0.2 }}>
+    <View style={styles.container}>
       <View style={styles.footerButtons}>
         <View style={styles.buttonAdd}>
           <Button title='Add to-do' color='blue' onPress={addTodoHandler} />
@@ -36,6 +37,7 @@ export function AddTodoFooter({ addTodoHandler }: Ptops) {
 }
 
 const styles = StyleSheet.create<Style>({
+  container: { flex: 0.2 },
   footerButtons: {
     marginTop: 30,
     marginVertical: 20,

@@ -1,7 +1,14 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, ViewStyle } from 'react-native';
 import { ScreenRouteProp, ScreenNavigationProp } from '../../navigation/types';
+
+type Style = {
+  container: ViewStyle;
+  footerButton: ViewStyle;
+  applyView: ViewStyle;
+  closeView: ViewStyle;
+};
 
 export function SettingsFooter() {
   const { params } = useRoute<ScreenRouteProp<'Settings'>>();
@@ -11,8 +18,8 @@ export function SettingsFooter() {
   const navigation = useNavigation<ScreenNavigationProp<'Todos'>>();
 
   return (
-    <View style={{ flex: 0.5, justifyContent: 'flex-end', marginBottom: 30 }}>
-      <View style={[styles.footerButton, { borderColor: 'blue' }]}>
+    <View style={styles.container}>
+      <View style={[styles.footerButton, styles.applyView]}>
         <Button
           title='Apply settings'
           onPress={() => {
@@ -20,7 +27,7 @@ export function SettingsFooter() {
           }}
         />
       </View>
-      <View style={[styles.footerButton, { borderColor: 'red' }]}>
+      <View style={[styles.footerButton, styles.closeView]}>
         <Button
           title='Close settings'
           color='red'
@@ -33,11 +40,14 @@ export function SettingsFooter() {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create<Style>({
+  container: { flex: 0.5, justifyContent: 'flex-end', marginBottom: 30 },
   footerButton: {
     borderWidth: 1,
     borderRadius: 5,
     marginVertical: 5,
     marginHorizontal: 60,
   },
+  applyView: { borderColor: 'blue' },
+  closeView: { borderColor: 'red' },
 });

@@ -31,6 +31,7 @@ interface ITodo {
 
 type Style = {
   todo: ViewStyle;
+  viewCheckbox: ViewStyle;
 };
 
 export function Todo({
@@ -86,7 +87,10 @@ export function Todo({
         ]}
       >
         <View
-          style={{ flexDirection: 'row', width: dimentions.screen.width - 200 }}
+          style={[
+            styles.viewCheckbox,
+            { width: dimentions.screen.width - 200 },
+          ]}
         >
           <BouncyCheckbox
             size={25}
@@ -123,4 +127,5 @@ const styles = StyleSheet.create<Style>({
     borderRadius: 5,
     marginBottom: 10,
   },
+  viewCheckbox: { flexDirection: 'row' },
 });
